@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.NotificationTaskRepository.MessageSender;
+import pro.sky.telegrambot.NotificationTaskRepository.NotificationTaskRepository;
 import pro.sky.telegrambot.enity.NotificationTask;
 
 import javax.annotation.PostConstruct;
@@ -22,12 +24,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    @Autowired
-    private TelegramBot telegramBot;
+    private final MessageSender messageSender;
 
-    @PostConstruct
-    public void init() {
-        telegramBot.setUpdatesListener(this);
+    public TelegramBotUpdatesListener(MessageSender messageSender) {
+        this.messageSender = messageSender;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             Long chatId = update.message().chat().id();
 
             if ("/start".equals(messageText)) {
-                bot.execute(new SendMessage(chatId, "Привет! Я бот-напоминалка. Отправь мне сообщение в формате:\n\n📅 `01.01.2025 18:00 Сделать домашку`"));
+                messageSender.sendMessage(chatId, "Привет! Я бот-напоминалка. Отправь мне сообщение в формате:\n\n📅 `01.01.2025 18:00 Сделать домашку`"));
                 continue;
             }
 
@@ -59,12 +59,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
                     repository.save(task);
 
-                    bot.execute(new SendMessage(chatId, "✅ Напоминание сохранено!"));
+                    messageSender.sendMessage(chatId, "Привет! Я бот-напоминалка...");
                 } catch (Exception e) {
-                    bot.execute(new SendMessage(chatId, "❌ Ошибка при разборе даты. Используй формат: 01.01.2025 18:00 Текст"));
+                    messageSender.sendMessage(chatId, "❌ Ошибка при разборе даты. Используй формат: 01.01.2025 18:00 Текст"));
                 }
             } else {
-                bot.execute(new SendMessage(chatId, "❓ Не распознано. Используй формат:\n01.01.2025 18:00 Сделать что-то"));
+                messageSender.sendMessage(chatId, "❓ Не распознано. Используй формат:\n01.01.2025 18:00 Сделать что-то"));
             }
         }
 
