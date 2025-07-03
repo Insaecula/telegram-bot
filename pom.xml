@@ -52,4 +52,29 @@
 		</plugins>
 	</build>
 
+	<databaseChangeLog>
+			xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+					   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+		<include file="db/changelog/changes/001-create-notification-task.xml"/>
+	</databaseChangeLog>
+
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.18.30</version> <!-- или последнюю -->
+		<scope>provided</scope>
+	</dependency>
+
+	<changeSet id="1" author="you">
+		<createTable tableName="notification_task">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="chat_id" type="BIGINT"/>
+			<column name="message" type="TEXT"/>
+			<column name="notification_time" type="TIMESTAMP"/>
+		</createTable>
+	</changeSet>
 </project>

@@ -1,0 +1,10 @@
+<changeSet id="1" author="you">
+    <createTable tableName="notification_task">
+        <column name="id" type="BIGINT" autoIncrement="true">
+            <constraints primaryKey="true"/>
+        </column>
+        <column name="chat_id" type="BIGINT"/>
+        <column name="message" type="TEXT"/>
+        <column name="notification_time" type="TIMESTAMP"/>
+    </createTable>
+</changeSet>
